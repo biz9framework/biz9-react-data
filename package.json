@@ -1,16 +1,26 @@
 {
-  "name": "biz9-blank",
-  "version": "1.0.4",
+  "name": "biz9-react-data",
+  "version": "1.0.5",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "#Certified CoderZ",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.6",
+    "biz9-data-logic": "^11.7.62",
     "biz9-scriptz": "^5.8.12",
-    "biz9-utility": "^4.4.28"
-  }
+    "biz9-utility": "^4.4.28",
+    "jest": "^30.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/biz9framework/biz9-react-data.git"
+  },
+  "bugs": {
+    "url": "https://github.com/biz9framework/biz9-react-data/issues"
+  },
+  "homepage": "https://github.com/biz9framework/biz9-react-data#readme"
 }

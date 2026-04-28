@@ -1,4 +1,5 @@
-echo 'BiZ9-Blank Test'
+echo 'BiZ9-React-Data Test'
 run_test=$1
 echo $run_test
-mocha -g $run_test test.js
+npx jest -t $run_test test.js
+
