@@ -1,28 +1,36 @@
 // -- biz9
-import {Log,Obj,Status_Type,Response_Logic} from "biz9-utility";
-import {Favorite_Url,Favorite_Logic} from "biz9-favorite";
-import {Config} from "../../config";
-import {Remote_Logic,Remote_Data} from "biz9-react-remote";
+import {Log,Str,Obj,Status_Type,Response_Field,Response_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-utility/source";
+import {Data_Url,Data_Logic,Data_Response_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source";
+import {Favorite_Url,Favorite_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-favorite/source";
+import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
 const async = require('async');
 class Favorite_Service {
-    // -- define
-    // --- post
-    // --- get
-    // --- user_search
+  /* - 9_define
+     *  -- user_search
+     *  -- delete
+     *  -- post
+    */
     // - 9_post 9_favorite_post
-    static post = (parent_table,parent_id,user_id,option) => {
+    static post = (url,parent_table,parent_id,user_id,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_URL,Status_Type.OK,url));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_TABLE,Status_Type.OK,parent_table));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_ID,Status_Type.OK,parent_id));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_USER_ID,Status_Type.OK,user_id));
+                    call();
+                },
+                async function(call){
                     let favorite = Favorite_Logic.get(parent_table,parent_id,user_id);
                     let form_data = {favorite:favorite};
-                    let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Favorite_Url.POST,form_data);
-                    let biz_data = await Remote_Data.post(service_data);
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
                 },
             ],
                 function(error, result){
@@ -31,19 +39,26 @@ class Favorite_Service {
         });
     };
     // - 9_delete 9_favorite_delete
-    static delete = (parent_table,parent_id,user_id,option) => {
+    static delete = (url,parent_table,parent_id,user_id,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_URL,Status_Type.OK,url));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_TABLE,Status_Type.OK,parent_table));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_ID,Status_Type.OK,parent_id));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_USER_ID,Status_Type.OK,user_id));
+                    call();
+                },
+                async function(call){
                     let favorite = Favorite_Logic.get(parent_table,parent_id,user_id);
                     let form_data = {favorite:favorite};
-                    let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Favorite_Url.DELETE,form_data);
-                    let biz_data = await Remote_Data.post(service_data);
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
                 },
             ],
                 function(error, result){
@@ -52,18 +67,24 @@ class Favorite_Service {
         });
     };
     //9_user_search 9_favorite_user_search
-    static user_search = (parent_table,user_id,option) => {
+    static user_search = (url,parent_table,user_id,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_URL,Status_Type.OK,url));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_TABLE,Status_Type.OK,parent_table));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_USER_ID,Status_Type.OK,user_id));
+                    call();
+                },
+                async function(call){
                     let form_data = {parent_table:parent_table,user_id:user_id};
-                    let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Favorite_Url.USER_SEARCH,form_data);
-                    let biz_data = await Remote_Data.post(service_data);
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
                 },
             ],
                 function(error, result){
@@ -72,4 +93,4 @@ class Favorite_Service {
         });
     };
 }
-export {Favorite_Data};
+export {Favorite_Service};

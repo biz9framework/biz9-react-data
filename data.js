@@ -5,7 +5,15 @@ import {Website_Table,Form_Field} from "/home/think1/www/doqbox/biz9-framework/b
 import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
 import async from 'async';
 class Data_Service {
-    // - 9_get
+    /* - 9_define
+     *  -- copy
+     *  -- delete
+     *  -- delete_search
+     *  -- get
+     *  -- post
+     *  -- post_items
+     *  -- search
+    */
     static get = (url,table,id,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
@@ -38,23 +46,30 @@ class Data_Service {
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {delete_page_cache:false};
             async.series([
+               async function(call){
+                    const form_data = {table:table,id:id,data:post_data,option:option};
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
+                },
                 async function(call){
+                    Log.w('rrrrr',data);
+                    Log.w('cool',response);
+                    /*
+
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_URL,Status_Type.OK,url));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_TABLE,Status_Type.OK,table));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_ID,Status_Type.OK,id));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_DATA,Status_Type.OK,post_data));
+                    */
                     call();
+
                 },
-                async function(call){
-                    const form_data = {table:table,id:id,data:post_data,option:option};
-                    const [biz_response,biz_data] = await Remote.post(url,form_data);
-                    response = biz_data;
-                    data = biz_data;
-                    call();
-                },
+
             ],
                 function(error, result){
-                    callback([response,data]);
+                    //callback([response,data]);
                 });
         });
     };

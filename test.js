@@ -6,11 +6,13 @@ Description: BiZ9 Framework: Data - Test
 */
 import {Log,Num,Str,Obj,Status_Type,Response_Field,Response_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-utility/source";
 import {Data_Url,Data_Logic,Data_Response_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source";
+import {Favorite_Url,Favorite_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-favorite/source";
 import {Website_Table,Form_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-website/source";
 import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
 import async from 'async';
 import {Config,Project_Table} from "./constant";
 import {Data_Service} from "./data";
+import {Favorite_Service} from "./favorite";
 /*
  * 9_define
  * -- DATA --
@@ -21,7 +23,10 @@ import {Data_Service} from "./data";
  *  - data_search
  *  - data_delete_search
  *  - data_copy
- *
+ * -- FAVORITE --
+ *  - favorite_delete
+ *  - favorite_post
+ *  - favorite_user_search
  */
 //9_delete - 9_test_delete
 test('data_delete', async () => {
@@ -75,7 +80,7 @@ test('data_get', async () => {
     console.log('GET-DONE');
 }, 99999);
 //9_post_items - 9_test_post_items
-test('data_post_items', async () => {
+test('data_more_post_items', async () => {
     console.log('POST-ITEMS-START');
     let response={};
     let database = {};
@@ -138,7 +143,56 @@ test('data_copy', async () => {
     console.log('COPY-SUCCESS');
     console.log('COPY-DONE');
 }, 99999);
-
+//9_favorite_post - 9_test_favorite_post
+test('favorite_post', async () => {
+    console.log('FAVORITE-POST-START');
+    let response={};
+    let database = {};
+    let data = {};
+    let parent_table = Project_Table.PRODUCT;
+    let parent_id = '69f117bffd2c4642efcaa8b9';
+    let user_id = '69f117bffd2c4642efcaa912';
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
+    [biz_response,biz_data] = await Favorite_Service.post(url,parent_table,parent_id,user_id,option);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('FAVORITE-POST-SUCCESS');
+    console.log('FAVORITE-POST-DONE');
+}, 99999);
+//9_favorite_user_search - 9_test_user_search
+test('favorite_user_search', async () => {
+    console.log('FAVORITE-USER-SEARCH-START');
+    let response={};
+    let database = {};
+    let data = {};
+    let parent_table = Project_Table.PRODUCT;
+    let user_id = '69f117bffd2c4642efcaa912';
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.USER_SEARCH);
+    [biz_response,biz_data] = await Favorite_Service.user_search(url,parent_table,user_id,option);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('FAVORITE-USER-SEARCH-SUCCESS');
+    console.log('FAVORITE-USER-SEARCH-DONE');
+}, 99999);
+//9_favorite_delete - 9_test_favorite_delete
+test('favorite_delete', async () => {
+    console.log('FAVORITE-DELETE-START');
+    let response={};
+    let database = {};
+    let data = {};
+    let parent_table = Project_Table.PRODUCT;
+    let parent_id = '69f117bffd2c4642efcaa8b9';
+    let user_id = '69f117bffd2c4642efcaa912';
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
+    [biz_response,biz_data] = await Favorite_Service.delete(url,parent_table,parent_id,user_id,option);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('FAVORITE-POST-SUCCESS');
+    console.log('FAVORITE-POST-DONE');
+}, 99999);
 //9_blank - 9_test_blank
 test('blank', async () => {
     console.log('BLANK-START');

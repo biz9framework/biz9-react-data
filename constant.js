@@ -4,7 +4,7 @@ const URL = "http://localhost:1904";
 const PORT_ID = "1904";
 //-env-test - end //
 const Config = {
-    TITLE:'React-Data-Test',
+    TITLE:'BiZ9-React-Data',
     APP_ID:APP_ID,
     PORT_ID:PORT_ID,
     URL:URL,

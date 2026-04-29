@@ -7,8 +7,6 @@ Description: BiZ9 Framework: Blank
 const {Scriptz}=require("biz9-scriptz");
 const {Log}=require("biz9-utility");
 class Blank {
-    static get = async () => {
-    }
     //9_blank
     static blank = async (database,table) => {
         // -- blank --
