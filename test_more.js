@@ -13,32 +13,42 @@ import {Store_Logic,Cart_Logic,Order_Logic,Store_Type,Store_Url} from "/home/thi
 import {User_Logic,User_Url} from "/home/think1/www/doqbox/biz9-framework/biz9-user/source";
 import {Config,Project_Table} from "./constant";
 import {Data_Service} from "./data";
-import {Cart_Service} from "./store";
+import {Cart_Service,Order_Service} from "./store";
 import async from 'async';
 class Test_More {
     //9_store_post_cart
     static store_post_cart = async () => {
         // -- NEW-USER-PRODUCT--
+        let post_cart = {};
+        let cart = {};
         let user = User_Logic.get_test_user();
         let product_1 = Store_Logic.get_test_product({title:'Product '+Str.get_id()});
         let sub_product_1 = Store_Logic.get_test_product({title:'Product '+Str.get_id()});
         let sub_product_2 = Store_Logic.get_test_product({title:'Product '+Str.get_id()});
-        let post_products = [product_1,sub_product_1,sub_product_2];
-
+        let products = [product_1,sub_product_1,sub_product_2];
         return new Promise((callback) => {
             let response=Response_Logic.get();
             let data = {};
             async.series([
                 async function(call){
-                    // -- test-get-products --
+                    // -- test-post--get-products --
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST_ITEMS);
-                    [biz_response,biz_data] = await Data_Service.post_items(url,post_products);
+                    [biz_response,biz_data] = await Data_Service.post_items(url,products);
                     product_1 = Obj.find('title',product_1.title,biz_data);
                     sub_product_1 = Obj.find('title',sub_product_1.title,biz_data);
                     sub_product_2 = Obj.find('title',sub_product_2.title,biz_data);
                     console.log('product_1'+"--id= "+product_1.id + "--title="+product_1.title);
                     console.log('sub_product_1'+"--id= "+sub_product_1.id + "--title="+sub_product_1.title);
                     console.log('sub_product_2'+"--id= "+sub_product_2.id + "--title="+sub_product_2.title);
+                    call();
+                },
+                async function(call){
+                    // -- test-post--get-user --
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+                    [biz_response,biz_data] = await Data_Service.post(url,user.table,user);
+                    user = biz_data;
+                    console.log('user'+"--id= "+user.id + "--email="+user.email);
+                    console.log('user'+"--firstname= "+user.firstname + "--lastname="+user.lastname);
                     call();
                 },
                 async function(call){
@@ -50,26 +60,16 @@ class Test_More {
                     cart_item_1.cart_sub_items.push(cart_sub_1);
                     cart_item_1.cart_sub_items.push(cart_sub_2);
                     cart.cart_items.push(cart_item_1);
-                    Log.w('33_biz_data_cart',cart);
                     /*
                     Log.w('33_biz_data_cart_items',cart.cart_items[0]);
                     Log.w('33_biz_data_cart_items_count',cart.cart_items[0].cart_sub_items.length);
                     Log.w('33_biz_data_cart_number',cart.cart_number);
                     */
-
-                    console.log('1111111111bb');
-                    console.log(Cart_Service);
-                    console.log('ccccccc');
-                    console.log(url);
-                    console.log('ddddddd');
-                    console.log(cart);
-                    console.log('11111111cccc');
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART_POST);
                     const [biz_response,biz_data] = await Cart_Service.post(url,cart);
-                    response = biz_response;
-                    data = biz_data;
                     Log.w('99_biz_response',biz_response);
                     Log.w('99_biz_data',biz_data);
+                    call();
                     /*
                     Log.w('99_biz_data',biz_data);
                     Log.w('44a_biz_data_post_cart',post_cart);
@@ -80,41 +80,57 @@ class Test_More {
                     Log.w('33_biz_data_cart_number',cart.cart_number);
                     */
                 },
-                /*
+                async function(call){
+                    // -- post-cart --
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART_POST);
+                    const [biz_response,biz_data] = await Cart_Service.post(url,cart);
+                    post_cart = biz_data;
+                    call();
+                },
                 async function(call){
                     // -- get-cart --
-                    const [biz_response,biz_data] = await Cart_Data.get_cart(database,post_cart.cart.cart_number);
-                    //Log.w('55_biz_response',biz_response);
-                    Log.w('55_biz_data',biz_data);
-                    Log.w('55_biz_data_cart_items',biz_data.cart_items);
-                    Log.w('55_biz_data_cart_items',biz_data.cart_items[0]);
-                    Log.w('55_biz_data_cart_sub_items',biz_data.cart_items[0].cart_sub_items);
-                    Log.w('55_biz_data_cart_sub_items_count',biz_data.cart_items[0].cart_sub_items.length);
-                    Log.w('44_biz_data_cart_sub_items_count',post_cart.cart_sub_items.length);
-                    Log.w('33_biz_datat_cart_number',cart.cart_number);
-                    Log.w('44_biz_data_post_cart_number',post_cart.cart.cart_number);
-                    Log.w('55_biz_data_cart_number',biz_data.cart_number);
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART);
+                    const [biz_response,biz_data] = await Cart_Service.get(url,post_cart.cart_number);
+                    cart = biz_data;
+                    Log.w('99_biz_response_get_cart',biz_response);
+                    Log.w('99_biz_data_get_cart',biz_data);
+                    Log.w('11_biz_data_cart_items',biz_data.cart_items);
+                    Log.w('22_biz_data_cart_items',biz_data.cart_items[0]);
+                    Log.w('33_biz_data_cart_sub_items',biz_data.cart_items[0].cart_sub_items);
+                    Log.w('44_biz_data_cart_sub_items_count',biz_data.cart_items[0].cart_sub_items.length);
+                    Log.w('55_biz_data_cart_sub_items_count',post_cart.cart_items[0].cart_sub_items.length);
+                    Log.w('66_biz_datat_cart_number',cart.cart_number);
+                    Log.w('77_biz_data_post_cart_number',post_cart.cart_number);
+                    Log.w('88_biz_data_cart_number',biz_data.cart_number);
+                    call();
+                },
+            ]).then(result => {
+                callback([response,data]);
+            }).catch(err => {
+                Log.error("Store-Post-Cart",err);
+            });
+        });
+    };
+    //9_cart_delete
+    static store_delete_cart = async () => {
+        // -- cart-delete --
+        return new Promise((callback) => {
+            let response=Response_Logic.get();
+            let cart_number  = 'CA-16361';
+            let data = {};
+            async.series([
+                async function(call){
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART_DELETE);
+                    const [biz_response,biz_data] = await Cart_Service.delete(url,cart_number);
+                    Log.w('99_biz_response',biz_response);
+                    Log.w('99_biz_data',biz_data);
+                    data = biz_data;
+                    response = biz_response;
+                   call();
                 },
                 async function(call){
-                    //user
-                    const [biz_response,biz_data] = await Data.post(database,user.table,user);
-                    user = biz_data;
-                },
-                async function(call){
-                    // -- NEW-PRODUCT-POST-START --
-                    //products
-                    const [biz_response,biz_data] = await Data.post_items(database,post_products);
-                    post_products = biz_data;
-                    product_1 = post_products[0];
-                    sub_product_1 = post_products[1];
-                    sub_product_2 = post_products[2];
-                    // -- NEW-PRODUCT-POST-END --
-                },
-                */
-                async function(call){
-                    console.log('aproduct_1_id = '+product_1.id + " --product_1_title-- "+ product_1.title);
-                    console.log('bsub_roduct_1_id = '+sub_product_1.id + " -- sub_product_1_title-- "+ sub_product_1.title);
-                    console.log('csub_roduct_2_id = '+sub_product_2.id + " -- sub_product_2_title-- "+ sub_product_2.title);
+                    response = Response_Logic.get_status(response);
+                    call();
                 },
             ]).then(result => {
                 callback([response,data]);
@@ -124,24 +140,108 @@ class Test_More {
         });
     };
 
-    //9_blank
-    static blank = async (database,table) => {
+    //9_cart_get
+    static store_get_cart = async () => {
+        // -- cart-get --
+        return new Promise((callback) => {
+            let response=Response_Logic.get();
+            let cart_number = 'CA-10809';
+            let data = {};
+            async.series([
+                async function(call){
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART);
+                    const [biz_response,biz_data] = await Cart_Service.get(url,cart_number);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
+                },
+                async function(call){
+                    response = Response_Logic.get_status(response);
+                    call();
+                },
+            ]).then(result => {
+                callback([response,data]);
+            }).catch(err => {
+                Log.error("Store-Get-Cart-Data",err);
+            });
+        });
+    };
+    //9_store_post_order
+    static store_post_order = async () => {
+        return new Promise((callback) => {
+            let response=Response_Logic.get();
+            let cart_number = 'CA-69704';
+            let cart = {};
+            let post_order = {};
+            let post_order_payment = {};
+            let order = {};
+            let data = {};
+            async.series([
+                async function(call){
+                    // -- get-cart, get-post-order --
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART);
+                    [biz_response,biz_data] = await Cart_Service.get(url,cart_number);
+                    cart = biz_data;
+                    call();
+                },
+                async function(call){
+                    // -- get-post-order, get-post-order-payments
+                    post_order = Order_Logic.get(cart,{cart_code:'OR'});
+                    post_order_payment = Order_Logic.get_order_payment(post_order.order_number,Store_Type.ORDER_PAYMENT_METHOD_TEST,Num.get_id());
+                    Log.w('33_post_order',post_order);
+                    Log.w('33_order_payment',post_order_payment);
+                    call();
+                },
+                async function(call){
+                    // -- post-order --
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER_POST);
+                    Log.w('33_post_order_url',url);
+                    [biz_response,biz_data] = await Order_Service.post(url,post_order,[post_order_payment]);
+                    order = biz_data;
+                    Log.w('88_get_post_order_biz_response',biz_response);
+                    Log.w('88_get_post_order_biz_data',biz_data);
+                    call();
+                },
+                async function(call){
+                    //Log.w('111111',cart);
+                }
+                /*
+                async function(call){
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.POST_ORDER);
+                    [biz_response,biz_data] = await Order_Service.post(url,user.table,user);
+                    data = biz_data;
+                    response = biz_response;
+                    call();
+                },
+                async function(call){
+                    response = Response_Logic.get_status(response);
+                    call();
+                },
+                */
+            ]).then(result => {
+                //callback([response,data]);
+            }).catch(err => {
+                Log.error("Store-Post-Order-Test",err);
+            });
+        });
+    };
+       //9_blank
+    static blank = async () => {
         // -- blank --
         return new Promise((callback) => {
             let response=Response_Logic.get();
             let data = {};
             async.series([
-                async function(call) {
-                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_APP_ID,Status_Type.OK,database.data_config.APP_ID,{title:Config.TITLE}));
-                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_TABLE,Status_Type.OK,table,{title:Config.TITLE}));
-                },
                 async function(call){
-                    const [biz_response,biz_data] = await get(database,table,items);
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+                    [biz_response,biz_data] = await Data_Service.post(url,user.table,user);
                     data = biz_data;
                     response = biz_response;
+                    call();
                 },
                 async function(call){
                     response = Response_Logic.get_status(response);
+                    call();
                 },
             ]).then(result => {
                 callback([response,data]);

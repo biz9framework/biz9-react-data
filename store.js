@@ -11,12 +11,54 @@ import async from 'async';
 // -- other
 /*  - METHODS -
  *  -- CART_SERVICE --
- *  post / (cart)
+ *  delete / (cart_number) /
+ *  get / (cart_number) /
+ *  post / (cart) /
  *  -- ORDER_SERVICE --
- *  post / (order,order_payments)
+ *  delete / (order_number)
  *  get / (order_number)
+ *  post / (order,order_payments)
+ *  search / (search_filter,search_sort_by,search_page_current,search_page_size)
 */
 class Cart_Service {
+    static delete = (url,cart_number,option) => {
+        return new Promise((callback) => {
+            let response = Response_Logic.get();
+            let data = {};
+            option = !Obj.check_is_empty(option) ? option : {};
+            async.series([
+                async function(call){
+                    const form_data = {cart_number:cart_number,option:option};
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
+                },
+            ],
+                function(error, result){
+                    callback([response,data]);
+                });
+        });
+    };
+    static get = (url,cart_number,option) => {
+        return new Promise((callback) => {
+            let response = Response_Logic.get();
+            let data = {};
+            option = !Obj.check_is_empty(option) ? option : {};
+            async.series([
+                async function(call){
+                    const form_data = {cart_number:cart_number,option:option};
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
+                },
+            ],
+                function(error, result){
+                    callback([response,data]);
+                });
+        });
+    };
     static post = (url,cart,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
@@ -26,8 +68,9 @@ class Cart_Service {
                 async function(call){
                     const form_data = {cart:cart,option:option};
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    response = biz_data;
+                    data = biz_data;
+                    call();
                 },
             ],
                 function(error, result){
@@ -38,37 +81,25 @@ class Cart_Service {
 }
 class Order_Service {
     // -- 9_post
-    static post = (order,order_payments,option) => {
+    static post = (url,order,order_payments,option) => {
+        console.log('44444444');
+        console.log('44444444');
+        console.log('44444444');
         return new Promise((callback) => {
+            console.log('5555555');
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
+                    console.log('11111');
                     const form_data = {order:order,order_payments:order_payments};
-                    const service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Store_Url.ORDER_POST,form_data);
-                    const biz_data = await Remote_Data.post(service_data);
+                    console.log('2222222');
+                    const biz_data = await Remote.post(url,form_data);
+                    console.log('333333');
                     response = biz_data.response;
                     data = biz_data.data;
-                },
-                async function(call){
-                    let app = Data_Logic.get(Project_Table.APP,0,
-                        {data:{
-                            order_number:data.order_number,
-                            user_id:data.user_id,
-                            app_id:Title.APP_ID+Num.get_id(99999),
-                            status_type:App.get_app_status_by_title(Title.APP_STATUS_NEW).value,
-                            title:'App Title',
-                            template:order[Field.PRODUCT_TITLE],
-                            cms:order[Field.PRODUCT_CMS],
-                            hosting:order[Field.PRODUCT_HOSTING],
-                            user_status_type:App.get_user_app_status_by_title(Title.USER_APP_STATUS_PENDING).value
-                        }});
-                    const form_data = {table:app.table,id:0,data:app,option:{}};
-                    const service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Data_Url.POST,form_data);
-                    const biz_data = await Remote_Data.post(service_data);
-                    response.messages.push(Response_Logic.get_message(Response_Field.RESPONSE_RESULT,Status_Type.OK,biz_data.response));
-
+                    call();
                 },
             ],
                 function(error, result){

@@ -43,7 +43,9 @@ import series from 'async/series';
  *  store_post_cart
  *  store_delete_cart
  *  store_get_order
- *  store_post_order
+ *  store_post_order //
+ *  store_delete_order //
+ *  store_search_order //
  */
 //9_delete - 9_test_delete
 test('data_delete', async () => {
@@ -205,18 +207,89 @@ test('favorite_delete', async () => {
     console.log('FAVORITE-POST-SUCCESS');
     console.log('FAVORITE-POST-DONE');
 }, 99999);
-
+//9_store_cart_cart - 9_test_cart_cart
+test('store_get_cart', async () => {
+    console.log('GET-STORE-CART-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_get_cart();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('GET-STORE-CART-SUCCESS');
+    console.log('GET-STORE-CART-DONE');
+}, 99999);
 //9_store_post_cart - 9_test_post_cart
 test('store_post_cart', async () => {
-    console.log('POST-CART-START');
+    console.log('POST-STORE-CART-START');
     let response={};
     let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_post_cart();
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
-    console.log('POST-CART-SUCCESS');
-    console.log('POST-CART-DONE');
+    console.log('POST-STORE-CART-SUCCESS');
+    console.log('POST-STORE-CART-DONE');
+}, 99999);
+//9_store_delete_cart - 9_test_delete_cart
+test('store_delete_cart', async () => {
+    console.log('DELETE-STORE-CART-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_delete_cart();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('DELETE-STORE-CART-SUCCESS');
+    console.log('DELETE-STORE-CART-DONE');
+}, 99999);
+//9_store_order_post - 9_test_order_post
+test('store_post_order', async () => {
+    console.log('POST-STORE-ORDER-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_post_order();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('POST-STORE-ORDER-SUCCESS');
+    console.log('POST-STORE-ORDER-DONE');
+}, 99999);
+//9_store_order_delete - 9_test_order_delete
+test('store_delete_order', async () => {
+    console.log('DELETE-STORE-ORDER-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_delete_order();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('DELETE-STORE-ORDER-SUCCESS');
+    console.log('DELETE-STORE-ORDER-DONE');
+}, 99999);
+//9_store_order_get - 9_test_order_get
+test('store_get_order', async () => {
+    console.log('GET-ORDER-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_get_order();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('GET-ORDER-SUCCESS');
+    console.log('GET-ORDER-DONE');
+}, 99999);
+//9_store_search_order_get - 9_test_order_search
+test('store_search_order', async () => {
+    console.log('SEARCH-STORE-ORDER-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_get_order();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('SEARCH-STORE-ORDER-SUCCESS');
+    console.log('SEARCH-STORE-ORDER-DONE');
 }, 99999);
 
 

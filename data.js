@@ -45,14 +45,14 @@ class Data_Service {
         });
     };
     // -- 9_post
-    static post = (url,table,id,post_data,option) => {
+    static post = (url,table,post_data,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {delete_page_cache:false};
             series([
                 async function(call){
-                    const form_data = {table:table,id:id,data:post_data,option:option};
+                    const form_data = {table:table,data:post_data,option:option};
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
                     response = biz_response;
                     data = biz_data;
@@ -61,7 +61,6 @@ class Data_Service {
                 async function(call){
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_URL,Status_Type.OK,url,{title:Config.TITLE}));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_TABLE,Status_Type.OK,table,{title:Config.TITLE}));
-                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_ID,Status_Type.OK,id,{title:Config.TITLE}));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_DATA,Status_Type.OK,post_data,{title:Config.TITLE}));
                     call();
                 },
