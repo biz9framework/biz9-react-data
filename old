@@ -1,0 +1,70 @@
+ series([
+        async function(done) {
+            // -- post_user
+            //const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+            //const [biz_response,biz_data] = await Data_Service.post(url,user.table,'0',user);
+            //console.log('aaaaaaa');
+            //console.log(biz_response);
+            //user = biz_data.data;
+            //Log.w('11_user_22',biz_data);
+            //console.log(biz_response);
+            const run = async () => {
+                  return new Promise(async(resolve) => {
+                const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+                const [biz_response,biz_data] = await Data_Service.post(url,user.table,'0',user);
+                      resolve(biz_data);
+                        });
+
+            };
+            run().then((my_data) => {
+                console.log('111111');
+                console.log(my_data);
+                //console.log('2222');
+                done();
+            });
+
+            /*
+           return new Promise(async(resolve) => {
+               console.log('1111111');
+               const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+               const [biz_response,biz_data] = await Data_Service.post(url,user.table,'0',user);
+               console.log(biz_data);
+
+               if(biz_data){
+               done();
+                resolve();
+               }
+        });
+        */
+
+        },
+        function(done) {
+            console.log('3333333');
+            //console.log('STORE-POST-CART-SUCCESS');
+            //console.log('STORE-POST-CART-DONE');
+        }
+    ], function(err) {
+    })
+    /*
+async.series([
+    async function(call) {
+    // -- post_user
+        const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
+        [biz_response,biz_data] = await Data_Service.post(url,user.table,'0',user);
+        user = biz_data.data;
+        Log.w('11_user_22',user);
+//console.log(biz_response);
+        call();
+    },
+    function(call) {
+        console.log('2222222');
+        console.log(user);
+        console.log('3333333');
+        call();
+    }
+], function(err, results) {
+    console.log('44444444444');
+});
+*/
+
+

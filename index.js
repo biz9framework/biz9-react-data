@@ -6,6 +6,7 @@ Description: BiZ9 Framework: Blank
 */
 const {Scriptz}=require("biz9-scriptz");
 const {Log}=require("biz9-utility");
+import {Config,Project_Table} from "./constant";
 class Blank {
     //9_blank
     static blank = async (database,table) => {
@@ -15,8 +16,8 @@ class Blank {
             let data = {};
             async.series([
                 async function(call) {
-                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_APP_ID,Status_Type.OK,database.data_config.APP_ID,{title:BIZ9_CONFIG.TITLE}));
-                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_TABLE,Status_Type.OK,table,{title:BIZ9_CONFIG.TITLE}));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_APP_ID,Status_Type.OK,database.data_config.APP_ID,{title:Config.TITLE}));
+                    response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_TABLE,Status_Type.OK,table,{title:Config.TITLE}));
                 },
                 async function(call){
                     const [biz_response,biz_data] = await get(database,table,items);

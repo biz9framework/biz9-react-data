@@ -9,24 +9,41 @@ import {Data_Url,Data_Logic,Data_Response_Field} from "/home/think1/www/doqbox/b
 import {Favorite_Url,Favorite_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-favorite/source";
 import {Website_Table,Form_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-website/source";
 import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
-import async from 'async';
-import {Config,Project_Table} from "./constant";
+import {Store_Logic,Cart_Logic,Order_Logic,Store_Type} from "/home/think1/www/doqbox/biz9-framework/biz9-store/source";
+import {User_Logic,User_Url} from "/home/think1/www/doqbox/biz9-framework/biz9-user/source";
+import {Config,Project_Table,Data_Config} from "./constant";
 import {Data_Service} from "./data";
+import {Test_More} from "./test_more";
 import {Favorite_Service} from "./favorite";
+//
+const async = require('async');
+import series from 'async/series';
+
 /*
- * 9_define
- * -- DATA --
- *  - data_get
- *  - data_post
- *  - data_post_items
- *  - data_delete
- *  - data_search
- *  - data_delete_search
- *  - data_copy
- * -- FAVORITE --
- *  - favorite_delete
- *  - favorite_post
- *  - favorite_user_search
+ * - 9_DEFINE -
+ * -- TESTS --
+ * --- DATA ---
+ * data_copy
+ * data_delete
+ * data_delete_search
+ * data_get
+ * data_post
+ * data_post_items
+ * data_search
+ * --- FAVORITE ---
+ * favorite_delete
+ * favorite_post
+ * favorite_user_search
+ * --- USER ---
+ * user_login
+ * user_post
+ * user_register
+ * --- STORE ---
+ *  store_get_cart
+ *  store_post_cart
+ *  store_delete_cart
+ *  store_get_order
+ *  store_post_order
  */
 //9_delete - 9_test_delete
 test('data_delete', async () => {
@@ -35,7 +52,7 @@ test('data_delete', async () => {
     let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
-    let id = '69ee2d5978cd999df60cc2bd';
+    let id = '69f356eb877ecbb2fbba06ef';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.DELETE);
     [biz_response,biz_data] = await Data_Service.delete(url,table,id,option);
@@ -44,9 +61,7 @@ test('data_delete', async () => {
     console.log('DELETE-SUCCESS');
     console.log('DELETE-DONE');
 }, 99999);
-
-
-//9_post - 9_test_post
+//9_post - 9_test_post 9_data_post
 test('data_post', async () => {
     console.log('POST-START');
     let response={};
@@ -62,7 +77,6 @@ test('data_post', async () => {
     console.log('POST-SUCCESS');
     console.log('POST-DONE');
 }, 99999);
-
 //9_get - 9_test_get
 test('data_get', async () => {
     console.log('GET-START');
@@ -70,10 +84,10 @@ test('data_get', async () => {
     let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
-    let id = '69ee2d5978cd999df60cc2bd';
+    let id = '69f20dcf3e553abe771c212f';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.GET);
-    [biz_response,biz_data] = await Data_Service.get(url,table,id,option);
+    const [biz_response,biz_data] = await Data_Service.get(url,table,id,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('GET-SUCCESS');
@@ -95,7 +109,6 @@ test('data_more_post_items', async () => {
     console.log('POST-ITEMS-SUCCESS');
     console.log('POST-ITEMS-DONE');
 }, 99999);
-
 //9_search - 9_test_search
 test('data_search', async () => {
     console.log('SEARCH-START');
@@ -126,7 +139,6 @@ test('data_delete_search', async () => {
     console.log('DELETE-SEARCH-SUCCESS');
     console.log('DELETE-SEARCH-DONE');
 }, 99999);
-
 //9_copy - 9_test_copy
 test('data_copy', async () => {
     console.log('COPY-START');
@@ -134,7 +146,7 @@ test('data_copy', async () => {
     let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
-    let id = '69f117bffd2c4642efcaa8b8';
+    let id = '69f356eb877ecbb2fbba06ef';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.COPY);
     [biz_response,biz_data] = await Data_Service.copy(url,table,id,option);
@@ -150,8 +162,8 @@ test('favorite_post', async () => {
     let database = {};
     let data = {};
     let parent_table = Project_Table.PRODUCT;
-    let parent_id = '69f117bffd2c4642efcaa8b9';
-    let user_id = '69f117bffd2c4642efcaa912';
+    let parent_id = '69f20dcf3e553abe771c2130';
+    let user_id = '69f18a8d94953a568b894178';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
     [biz_response,biz_data] = await Favorite_Service.post(url,parent_table,parent_id,user_id,option);
@@ -193,6 +205,21 @@ test('favorite_delete', async () => {
     console.log('FAVORITE-POST-SUCCESS');
     console.log('FAVORITE-POST-DONE');
 }, 99999);
+
+//9_store_post_cart - 9_test_post_cart
+test('store_post_cart', async () => {
+    console.log('POST-CART-START');
+    let response={};
+    let database = {};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.store_post_cart();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('POST-CART-SUCCESS');
+    console.log('POST-CART-DONE');
+}, 99999);
+
+
 //9_blank - 9_test_blank
 test('blank', async () => {
     console.log('BLANK-START');
@@ -203,11 +230,42 @@ test('blank', async () => {
     let parent = Data_Logic.get(table,0,{data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
-    [biz_response,biz_data] = await Data_Service.post(url,parent.table,parent.id,parent,option);
+    const [biz_response,biz_data] = await Data_Service.get(url,table,id,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
-    console.log('BLANK-SUCCESS');
-    console.log('BLANK-DONE');
+    console.log('GET-SUCCESS');
+    console.log('GET-DONE');
 }, 99999);
+
+//9_blank_2 - 9_test_blank_2
+test('blank', async () => {
+    async.series([
+        async function(call){
+            console.log('BLANK-START');
+        },
+        async function(call){
+            /*
+            [biz_response,biz_data] = await Data_Service.post(url,parent.table,parent.id,parent,option);
+            Log.w('99_biz_response',biz_response);
+            Log.w('99_biz_data',biz_data);
+            console.log('BLANK-SUCCESS');
+            */
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(x);
+                }, 2000);
+            });
+        },
+    ]).then(result => {
+        console.log('BLANK-DONE');
+        callback([response,data]);
+    }).catch(err => {
+        Log.error("Blank-Data",err);
+    });
+}, 99999);
+
+
+
 
 

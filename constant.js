@@ -1,14 +1,11 @@
-//-env-test - start //
-const APP_ID = "test-stage-april";
-const URL = "http://localhost:1904";
-const PORT_ID = "1904";
-//-env-test - end //
 const Config = {
     TITLE:'BiZ9-React-Data',
-    APP_ID:APP_ID,
-    PORT_ID:PORT_ID,
-    URL:URL,
-    HAS_MONGO_DB:'true',
+    APP_ID:"test-stage-april",
+    PORT_ID: "1904",
+    URL:"http://localhost:1904",
+}
+const Data_Config = {
+   HAS_MONGO_DB:'true',
     MONGO_IP:"0.0.0.0",
     MONGO_USERNAME_PASSWORD:"",
     MONGO_PORT_ID:"27019",
@@ -35,6 +32,7 @@ class Project_Table {
 }
 module.exports = {
     Config,
+    Data_Config,
     Title,
     Project_Table
 }

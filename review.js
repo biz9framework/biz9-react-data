@@ -13,9 +13,9 @@ class Review_Service {
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
-                    let form_data = {review:review,option:option};
-                    let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Review_Url.POST,form_data);
-                    let biz_data = await Remote_Data.post(service_data);
+                    const form_data = {review:review,option:option};
+                    const service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Review_Url.POST,form_data);
+                    const biz_data = await Remote_Data.post(service_data);
                     response = biz_data.response;
                     data = biz_data.data;
                 },
@@ -33,9 +33,9 @@ class Review_Service {
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
-                    let form_data = {parent_table:parent_table,parent_id:parent_id,review_id:review_id};
-                    let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Review_Url.DELETE,form_data);
-                    let biz_data = await Remote_Data.post(service_data);
+                    const form_data = {parent_table:parent_table,parent_id:parent_id,review_id:review_id};
+                    const service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Review_Url.DELETE,form_data);
+                    const biz_data = await Remote_Data.post(service_data);
                     response = biz_data.response;
                     data = biz_data.data;
                 },

@@ -1,6 +1,6 @@
 {
   "name": "biz9-react-data",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "** Description",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.6",
+    "async-series": "^0.0.1",
     "biz9-data-logic": "^11.7.62",
     "biz9-scriptz": "^5.8.12",
     "biz9-utility": "^4.4.28",
