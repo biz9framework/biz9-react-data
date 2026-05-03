@@ -15,6 +15,19 @@ import {Config,Project_Table} from "./constant";
 import {Data_Service} from "./data";
 import {Cart_Service,Order_Service} from "./store";
 import async from 'async';
+/*
+ * - 9_DEFINE -
+ * -- TESTS --
+ * --- STORE ---
+ * store_get_cart
+ * store_post_cart
+ * store_delete_cart
+ * store_get_order
+ * store_post_order
+ * store_delete_order
+ * store_search_order
+ */
+
 class Test_More {
     //9_store_post_cart
     static store_post_cart = async () => {
@@ -126,10 +139,6 @@ class Test_More {
                     Log.w('99_biz_data',biz_data);
                     data = biz_data;
                     response = biz_response;
-                   call();
-                },
-                async function(call){
-                    response = Response_Logic.get_status(response);
                     call();
                 },
             ]).then(result => {
@@ -153,10 +162,6 @@ class Test_More {
                     const [biz_response,biz_data] = await Cart_Service.get(url,cart_number);
                     response = biz_response;
                     data = biz_data;
-                    call();
-                },
-                async function(call){
-                    response = Response_Logic.get_status(response);
                     call();
                 },
             ]).then(result => {
@@ -188,44 +193,76 @@ class Test_More {
                     // -- get-post-order, get-post-order-payments
                     post_order = Order_Logic.get(cart,{cart_code:'OR'});
                     post_order_payment = Order_Logic.get_order_payment(post_order.order_number,Store_Type.ORDER_PAYMENT_METHOD_TEST,Num.get_id());
-                    Log.w('33_post_order',post_order);
-                    Log.w('33_order_payment',post_order_payment);
+                    Log.w('66_post_order',post_order);
+                    Log.w('66_order_payment',post_order_payment);
                     call();
                 },
                 async function(call){
                     // -- post-order --
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER_POST);
-                    Log.w('33_post_order_url',url);
                     [biz_response,biz_data] = await Order_Service.post(url,post_order,[post_order_payment]);
-                    order = biz_data;
+                    data = biz_data;
                     Log.w('88_get_post_order_biz_response',biz_response);
                     Log.w('88_get_post_order_biz_data',biz_data);
                     call();
                 },
-                async function(call){
-                    //Log.w('111111',cart);
-                }
-                /*
-                async function(call){
-                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.POST_ORDER);
-                    [biz_response,biz_data] = await Order_Service.post(url,user.table,user);
-                    data = biz_data;
-                    response = biz_response;
-                    call();
-                },
-                async function(call){
-                    response = Response_Logic.get_status(response);
-                    call();
-                },
-                */
             ]).then(result => {
-                //callback([response,data]);
+                callback([response,data]);
             }).catch(err => {
                 Log.error("Store-Post-Order-Test",err);
             });
         });
     };
-       //9_blank
+    //9_store_get_order
+    static store_get_order = async () => {
+        // -- store_get_order --
+        return new Promise((callback) => {
+            let response=Response_Logic.get();
+            let order_number = 'OR-54966';
+            let data = {};
+            async.series([
+                async function(call){
+                    console.log('11111111');
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER);
+                    console.log('22222');
+                    [biz_response,biz_data] = await Order_Service.get(url,order_number);
+                    console.log('33333');
+                    data = biz_data;
+                    response = biz_response;
+                    call();
+                },
+            ]).then(result => {
+                console.log('5555');
+                console.log(data);
+                callback([response,data]);
+            }).catch(err => {
+                Log.error("Blank-Data",err);
+            });
+        });
+    };
+    //9_store_delete_order
+    static store_delete_order = async () => {
+        // -- store_delete_order --
+        return new Promise((callback) => {
+            let response=Response_Logic.get();
+            let order_number = 'OR-54966';
+            let data = {};
+            async.series([
+                async function(call){
+                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER_DELETE);
+                    [biz_response,biz_data] = await Order_Service.get(url,order_number);
+                    data = biz_data;
+                    response = biz_response;
+                    call();
+                },
+            ]).then(result => {
+                callback([response,data]);
+            }).catch(err => {
+                Log.error("Store-Test-Data",err);
+            });
+        });
+    };
+    //9_blank
     static blank = async () => {
         // -- blank --
         return new Promise((callback) => {
@@ -239,10 +276,6 @@ class Test_More {
                     response = biz_response;
                     call();
                 },
-                async function(call){
-                    response = Response_Logic.get_status(response);
-                    call();
-                },
             ]).then(result => {
                 callback([response,data]);
             }).catch(err => {
@@ -250,7 +283,6 @@ class Test_More {
             });
         });
     };
-
 }
 module.exports = {
     Test_More

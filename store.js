@@ -68,7 +68,7 @@ class Cart_Service {
                 async function(call){
                     const form_data = {cart:cart,option:option};
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
-                    response = biz_data;
+                    response = biz_response;
                     data = biz_data;
                     call();
                 },
@@ -80,25 +80,18 @@ class Cart_Service {
     };
 }
 class Order_Service {
-    // -- 9_post
+    // -- 9_post 9_order_post
     static post = (url,order,order_payments,option) => {
-        console.log('44444444');
-        console.log('44444444');
-        console.log('44444444');
         return new Promise((callback) => {
-            console.log('5555555');
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
-                    console.log('11111');
                     const form_data = {order:order,order_payments:order_payments};
-                    console.log('2222222');
-                    const biz_data = await Remote.post(url,form_data);
-                    console.log('333333');
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
                     call();
                 },
             ],
@@ -107,20 +100,19 @@ class Order_Service {
                 });
         });
     };
-    // -- 9_get_order
-    static get = (order_number,option) => {
+    // -- 9_get 9_order_get
+    static get = (url,order_number,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
-            option = Obj.merge(option,{id_field:Form_Field.TITLE_URL});
-            let form_data = {order_number:order_number,option:option};
-            let service_data = Remote_Logic.get_connect(Config.APP_ID,Config.URL,Store_Url.ORDER,form_data);
             async.series([
                 async function(call){
-                    const biz_data = await Remote_Data.post(service_data);
-                    response = biz_data.response;
-                    data = biz_data.data;
+                    const form_data = {cart:cart,option:option};
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
                 },
             ],
                 function(error, result){

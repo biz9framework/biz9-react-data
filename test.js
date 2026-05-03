@@ -43,7 +43,7 @@ import series from 'async/series';
  *  store_post_cart
  *  store_delete_cart
  *  store_get_order
- *  store_post_order //
+ *  store_post_order
  *  store_delete_order //
  *  store_search_order //
  */
@@ -51,7 +51,6 @@ import series from 'async/series';
 test('data_delete', async () => {
     console.log('DELETE-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let id = '69f356eb877ecbb2fbba06ef';
@@ -67,7 +66,6 @@ test('data_delete', async () => {
 test('data_post', async () => {
     console.log('POST-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let parent = Data_Logic.get(table,0,{data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
@@ -83,7 +81,6 @@ test('data_post', async () => {
 test('data_get', async () => {
     console.log('GET-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let id = '69f20dcf3e553abe771c212f';
@@ -99,7 +96,6 @@ test('data_get', async () => {
 test('data_more_post_items', async () => {
     console.log('POST-ITEMS-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let parents = Data_Logic.get(table,0,{count:3,data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
@@ -115,7 +111,6 @@ test('data_more_post_items', async () => {
 test('data_search', async () => {
     console.log('SEARCH-START');
     let response={};
-    let database = {};
     let data = {};
     let search = Data_Logic.get_search(Project_Table.PRODUCT,{},{},1,0);
     let option = {};
@@ -130,7 +125,6 @@ test('data_search', async () => {
 test('data_delete_search', async () => {
     console.log('DELETE-SEARCH-START');
     let response={};
-    let database = {};
     let data = {};
     let search = Data_Logic.get_search(Project_Table.PRODUCT,{},{},1,0);
     let option = {};
@@ -145,7 +139,6 @@ test('data_delete_search', async () => {
 test('data_copy', async () => {
     console.log('COPY-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let id = '69f356eb877ecbb2fbba06ef';
@@ -161,7 +154,6 @@ test('data_copy', async () => {
 test('favorite_post', async () => {
     console.log('FAVORITE-POST-START');
     let response={};
-    let database = {};
     let data = {};
     let parent_table = Project_Table.PRODUCT;
     let parent_id = '69f20dcf3e553abe771c2130';
@@ -178,7 +170,6 @@ test('favorite_post', async () => {
 test('favorite_user_search', async () => {
     console.log('FAVORITE-USER-SEARCH-START');
     let response={};
-    let database = {};
     let data = {};
     let parent_table = Project_Table.PRODUCT;
     let user_id = '69f117bffd2c4642efcaa912';
@@ -194,7 +185,6 @@ test('favorite_user_search', async () => {
 test('favorite_delete', async () => {
     console.log('FAVORITE-DELETE-START');
     let response={};
-    let database = {};
     let data = {};
     let parent_table = Project_Table.PRODUCT;
     let parent_id = '69f117bffd2c4642efcaa8b9';
@@ -211,7 +201,6 @@ test('favorite_delete', async () => {
 test('store_get_cart', async () => {
     console.log('GET-STORE-CART-START');
     let response={};
-    let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_get_cart();
     Log.w('99_biz_response',biz_response);
@@ -223,7 +212,6 @@ test('store_get_cart', async () => {
 test('store_post_cart', async () => {
     console.log('POST-STORE-CART-START');
     let response={};
-    let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_post_cart();
     Log.w('99_biz_response',biz_response);
@@ -235,7 +223,6 @@ test('store_post_cart', async () => {
 test('store_delete_cart', async () => {
     console.log('DELETE-STORE-CART-START');
     let response={};
-    let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_delete_cart();
     Log.w('99_biz_response',biz_response);
@@ -247,11 +234,11 @@ test('store_delete_cart', async () => {
 test('store_post_order', async () => {
     console.log('POST-STORE-ORDER-START');
     let response={};
-    let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_post_order();
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
+    Log.w('99_biz_data_order_number',biz_data.order_number);
     console.log('POST-STORE-ORDER-SUCCESS');
     console.log('POST-STORE-ORDER-DONE');
 }, 99999);
@@ -259,7 +246,6 @@ test('store_post_order', async () => {
 test('store_delete_order', async () => {
     console.log('DELETE-STORE-ORDER-START');
     let response={};
-    let database = {};
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_delete_order();
     Log.w('99_biz_response',biz_response);
@@ -271,7 +257,7 @@ test('store_delete_order', async () => {
 test('store_get_order', async () => {
     console.log('GET-ORDER-START');
     let response={};
-    let database = {};
+    let order_number = 'OR-54966';
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_get_order();
     Log.w('99_biz_response',biz_response);
@@ -283,9 +269,8 @@ test('store_get_order', async () => {
 test('store_search_order', async () => {
     console.log('SEARCH-STORE-ORDER-START');
     let response={};
-    let database = {};
     let data = {};
-    const [biz_response,biz_data] = await Test_More.store_get_order();
+    const [biz_response,biz_data] = await Test_More.store_search_order();
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('SEARCH-STORE-ORDER-SUCCESS');
@@ -297,7 +282,6 @@ test('store_search_order', async () => {
 test('blank', async () => {
     console.log('BLANK-START');
     let response={};
-    let database = {};
     let data = {};
     let table = Project_Table.PRODUCT;
     let parent = Data_Logic.get(table,0,{data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
