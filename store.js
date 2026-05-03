@@ -80,6 +80,26 @@ class Cart_Service {
     };
 }
 class Order_Service {
+    // -- 9_order_delete 9_order_delete
+    static delete = (url,order_number,option) => {
+        return new Promise((callback) => {
+            let response = Response_Logic.get();
+            let data = {};
+            option = !Obj.check_is_empty(option) ? option : {};
+            async.series([
+                async function(call){
+                    const form_data = {order_number:order_number,option:option};
+                    const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    response = biz_response;
+                    data = biz_data;
+                    call();
+                },
+            ],
+                function(error, result){
+                    callback([response,data]);
+                });
+        });
+    };
     // -- 9_post 9_order_post
     static post = (url,order,order_payments,option) => {
         return new Promise((callback) => {
@@ -108,7 +128,7 @@ class Order_Service {
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
-                    const form_data = {cart:cart,option:option};
+                    const form_data = {order_number:order_number,option:option};
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
                     response = biz_response;
                     data = biz_data;

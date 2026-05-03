@@ -26,10 +26,11 @@ import async from 'async';
  * store_post_order
  * store_delete_order
  * store_search_order
+ * --- REVIEW ---
+ * store_search_order
  */
-
 class Test_More {
-    //9_store_post_cart
+    //9_store_post_cart 9_post_cart
     static store_post_cart = async () => {
         // -- NEW-USER-PRODUCT--
         let post_cart = {};
@@ -80,6 +81,8 @@ class Test_More {
                     */
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART_POST);
                     const [biz_response,biz_data] = await Cart_Service.post(url,cart);
+                    response = biz_response;
+                    data = biz_data;
                     Log.w('99_biz_response',biz_response);
                     Log.w('99_biz_data',biz_data);
                     call();
@@ -93,30 +96,6 @@ class Test_More {
                     Log.w('33_biz_data_cart_number',cart.cart_number);
                     */
                 },
-                async function(call){
-                    // -- post-cart --
-                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART_POST);
-                    const [biz_response,biz_data] = await Cart_Service.post(url,cart);
-                    post_cart = biz_data;
-                    call();
-                },
-                async function(call){
-                    // -- get-cart --
-                    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.CART);
-                    const [biz_response,biz_data] = await Cart_Service.get(url,post_cart.cart_number);
-                    cart = biz_data;
-                    Log.w('99_biz_response_get_cart',biz_response);
-                    Log.w('99_biz_data_get_cart',biz_data);
-                    Log.w('11_biz_data_cart_items',biz_data.cart_items);
-                    Log.w('22_biz_data_cart_items',biz_data.cart_items[0]);
-                    Log.w('33_biz_data_cart_sub_items',biz_data.cart_items[0].cart_sub_items);
-                    Log.w('44_biz_data_cart_sub_items_count',biz_data.cart_items[0].cart_sub_items.length);
-                    Log.w('55_biz_data_cart_sub_items_count',post_cart.cart_items[0].cart_sub_items.length);
-                    Log.w('66_biz_datat_cart_number',cart.cart_number);
-                    Log.w('77_biz_data_post_cart_number',post_cart.cart_number);
-                    Log.w('88_biz_data_cart_number',biz_data.cart_number);
-                    call();
-                },
             ]).then(result => {
                 callback([response,data]);
             }).catch(err => {
@@ -124,12 +103,12 @@ class Test_More {
             });
         });
     };
-    //9_cart_delete
+    //9_cart_delete 9_delete_cart
     static store_delete_cart = async () => {
         // -- cart-delete --
         return new Promise((callback) => {
             let response=Response_Logic.get();
-            let cart_number  = 'CA-16361';
+            let cart_number  = 'CA-84501';
             let data = {};
             async.series([
                 async function(call){
@@ -148,13 +127,12 @@ class Test_More {
             });
         });
     };
-
     //9_cart_get
     static store_get_cart = async () => {
         // -- cart-get --
         return new Promise((callback) => {
             let response=Response_Logic.get();
-            let cart_number = 'CA-10809';
+            let cart_number = 'CA-84501';
             let data = {};
             async.series([
                 async function(call){
@@ -175,7 +153,7 @@ class Test_More {
     static store_post_order = async () => {
         return new Promise((callback) => {
             let response=Response_Logic.get();
-            let cart_number = 'CA-69704';
+            let cart_number = 'CA-14523';
             let cart = {};
             let post_order = {};
             let post_order_payment = {};
@@ -193,8 +171,6 @@ class Test_More {
                     // -- get-post-order, get-post-order-payments
                     post_order = Order_Logic.get(cart,{cart_code:'OR'});
                     post_order_payment = Order_Logic.get_order_payment(post_order.order_number,Store_Type.ORDER_PAYMENT_METHOD_TEST,Num.get_id());
-                    Log.w('66_post_order',post_order);
-                    Log.w('66_order_payment',post_order_payment);
                     call();
                 },
                 async function(call){
@@ -202,8 +178,6 @@ class Test_More {
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER_POST);
                     [biz_response,biz_data] = await Order_Service.post(url,post_order,[post_order_payment]);
                     data = biz_data;
-                    Log.w('88_get_post_order_biz_response',biz_response);
-                    Log.w('88_get_post_order_biz_data',biz_data);
                     call();
                 },
             ]).then(result => {
@@ -213,44 +187,39 @@ class Test_More {
             });
         });
     };
-    //9_store_get_order
+    //9_store_get_order 9_get_order 9_order_get
     static store_get_order = async () => {
         // -- store_get_order --
         return new Promise((callback) => {
             let response=Response_Logic.get();
-            let order_number = 'OR-54966';
+            let order_number = 'OR-44275';
             let data = {};
             async.series([
                 async function(call){
-                    console.log('11111111');
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER);
-                    console.log('22222');
                     [biz_response,biz_data] = await Order_Service.get(url,order_number);
-                    console.log('33333');
                     data = biz_data;
                     response = biz_response;
                     call();
                 },
             ]).then(result => {
-                console.log('5555');
-                console.log(data);
                 callback([response,data]);
             }).catch(err => {
                 Log.error("Blank-Data",err);
             });
         });
     };
-    //9_store_delete_order
+    //9_store_delete_order 9_delete_order
     static store_delete_order = async () => {
         // -- store_delete_order --
         return new Promise((callback) => {
             let response=Response_Logic.get();
-            let order_number = 'OR-54966';
+            let order_number = 'OR-55294';
             let data = {};
             async.series([
                 async function(call){
                     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Store_Url.ORDER_DELETE);
-                    [biz_response,biz_data] = await Order_Service.get(url,order_number);
+                    [biz_response,biz_data] = await Order_Service.delete(url,order_number);
                     data = biz_data;
                     response = biz_response;
                     call();

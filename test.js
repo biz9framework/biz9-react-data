@@ -35,17 +35,20 @@ import series from 'async/series';
  * favorite_post
  * favorite_user_search
  * --- USER ---
- * user_login
- * user_post
- * user_register
+ * user_login //
+ * user_post //
+ * user_register //
  * --- STORE ---
  *  store_get_cart
  *  store_post_cart
  *  store_delete_cart
  *  store_get_order
  *  store_post_order
- *  store_delete_order //
- *  store_search_order //
+ *  store_delete_order
+ * --- REVIEW ---
+ *  review_delete //
+ *  review_post //
+ *  review_parent_search //
  */
 //9_delete - 9_test_delete
 test('data_delete', async () => {
@@ -216,6 +219,7 @@ test('store_post_cart', async () => {
     const [biz_response,biz_data] = await Test_More.store_post_cart();
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
+    Log.w('99_biz_data_cart_number',biz_data.cart_number);
     console.log('POST-STORE-CART-SUCCESS');
     console.log('POST-STORE-CART-DONE');
 }, 99999);
@@ -257,7 +261,6 @@ test('store_delete_order', async () => {
 test('store_get_order', async () => {
     console.log('GET-ORDER-START');
     let response={};
-    let order_number = 'OR-54966';
     let data = {};
     const [biz_response,biz_data] = await Test_More.store_get_order();
     Log.w('99_biz_response',biz_response);
@@ -276,8 +279,55 @@ test('store_search_order', async () => {
     console.log('SEARCH-STORE-ORDER-SUCCESS');
     console.log('SEARCH-STORE-ORDER-DONE');
 }, 99999);
-
-
+//9_review_post - 9_postt_review
+test('review_post', async () => {
+    console.log('REVIEW-POST-START');
+    let response={};
+    let data = {};
+    let parent_table = Store_Table.PRODUCT;
+    let user = Data_Logic.get(User_Table.USER,'69f356eb877ecbb2fbba0745');
+    let parent = Data_Logic.get(Store_Table.PRODUCT,'69f356eb877ecbb2fbba06f2');
+    let review = Review_Logic.get_test();
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Review_Url.POST);
+    const [biz_response,biz_data] = await Review_Service.post(url,parent.table,parent.id,User_Table.USER,user.id,review);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('REVIEW-POST-SUCCESS');
+    console.log('REVIEW-POST-DONE');
+}, 99999);
+//9_review_delete - 9_delete_review
+test('review_delete', async () => {
+    console.log('REVIEW-DELETE-START');
+    let response={};
+    let data = {};
+    let parent_table = Store_Table.PRODUCT;
+    let parent_id = '69f356eb877ecbb2fbba06f2';
+    let review_id = "69f3853116612605a9ddd76b";
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Review_Url.DELETE);
+    const [biz_response,biz_data] = await Review_Service.delete(url,parent_table,parent_id,review_id);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('REVIEW-DELETE-SUCCESS');
+    console.log('REVIEW-DELETE-DONE');
+}, 99999);
+//9_review_parent_search - 9_review_search
+test('review_parent_search', async () => {
+    console.log('REVIEW-PARENT-SEARCH-START');
+    let response={};
+    let data = {};
+    let parent_id = '69f356eb877ecbb2fbba06f2';
+    let parent_table = Project_Table.PRODUCT;
+    let user_table = Project_Table.USER;
+    let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Review_Url.PARENT_SEARCH);
+    const [biz_response,biz_data] = await Review_Service.delete(url,user_table,parent_table,parent_id,{},1,0);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('REVIEW-PARENT-SEARCH-SUCCESS');
+    console.log('REVIEW-PARENT-SEARCH-DONE');
+}, 99999);
 //9_blank - 9_test_blank
 test('blank', async () => {
     console.log('BLANK-START');
@@ -301,13 +351,10 @@ test('blank', async () => {
             console.log('BLANK-START');
         },
         async function(call){
-            /*
             [biz_response,biz_data] = await Data_Service.post(url,parent.table,parent.id,parent,option);
             Log.w('99_biz_response',biz_response);
             Log.w('99_biz_data',biz_data);
             console.log('BLANK-SUCCESS');
-            */
-
             return new Promise((resolve) => {
                 setTimeout(() => {
                     resolve(x);
@@ -320,6 +367,17 @@ test('blank', async () => {
     }).catch(err => {
         Log.error("Blank-Data",err);
     });
+}, 99999);
+//9_blank_3
+test('blank_3', async () => {
+    console.log('BLANK-START');
+    let response={};
+    let data = {};
+    const [biz_response,biz_data] = await Test_More.blank();
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('BLANK-SUCCESS');
+    console.log('BLANK-DONE');
 }, 99999);
 
 
