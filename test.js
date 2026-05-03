@@ -8,13 +8,15 @@ import {Log,Num,Str,Obj,Status_Type,Response_Field,Response_Logic} from "/home/t
 import {Data_Url,Data_Logic,Data_Response_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source";
 import {Favorite_Url,Favorite_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-favorite/source";
 import {Website_Table,Form_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-website/source";
+import {Review_Logic,Review_Url} from "/home/think1/www/doqbox/biz9-framework/biz9-review/source";
 import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
-import {Store_Logic,Cart_Logic,Order_Logic,Store_Type} from "/home/think1/www/doqbox/biz9-framework/biz9-store/source";
-import {User_Logic,User_Url} from "/home/think1/www/doqbox/biz9-framework/biz9-user/source";
-import {Config,Project_Table,Data_Config} from "./constant";
+import {Store_Logic,Store_Table,Cart_Logic,Order_Logic,Store_Type} from "/home/think1/www/doqbox/biz9-framework/biz9-store/source";
+import {User_Logic,User_Url,User_Table} from "/home/think1/www/doqbox/biz9-framework/biz9-user/source";
+import {Config,Data_Config} from "./constant";
 import {Data_Service} from "./data";
 import {Test_More} from "./test_more";
 import {Favorite_Service} from "./favorite";
+import {Review_Service} from "./review";
 //
 const async = require('async');
 import series from 'async/series';
@@ -31,9 +33,10 @@ import series from 'async/series';
  * data_post_items
  * data_search
  * --- FAVORITE ---
- * favorite_delete
+ * favorite_delete //
+ * favorite_get //
  * favorite_post
- * favorite_user_search
+ * favorite_user_search //
  * --- USER ---
  * user_login //
  * user_post //
@@ -50,12 +53,16 @@ import series from 'async/series';
  *  review_post //
  *  review_parent_search //
  */
+// -- globalz --
+let PARENT = Data_Logic.get(Store_Table.PRODUCT,'69f52e5114ec8145e5057fa4');
+let USER = Data_Logic.get(User_Table.PRODUCT,'69f426cfe2edf06f73126a98');
+
 //9_delete - 9_test_delete
 test('data_delete', async () => {
     console.log('DELETE-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let id = '69f356eb877ecbb2fbba06ef';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.DELETE);
@@ -70,7 +77,7 @@ test('data_post', async () => {
     console.log('POST-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let parent = Data_Logic.get(table,0,{data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);
@@ -85,7 +92,7 @@ test('data_get', async () => {
     console.log('GET-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let id = '69f20dcf3e553abe771c212f';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.GET);
@@ -100,7 +107,7 @@ test('data_more_post_items', async () => {
     console.log('POST-ITEMS-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let parents = Data_Logic.get(table,0,{count:3,data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST_ITEMS);
@@ -115,7 +122,7 @@ test('data_search', async () => {
     console.log('SEARCH-START');
     let response={};
     let data = {};
-    let search = Data_Logic.get_search(Project_Table.PRODUCT,{},{},1,0);
+    let search = Data_Logic.get_search(Store_Table.PRODUCT,{},{},1,0);
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.SEARCH);
     [biz_response,biz_data] = await Data_Service.search(url,search,option);
@@ -129,7 +136,7 @@ test('data_delete_search', async () => {
     console.log('DELETE-SEARCH-START');
     let response={};
     let data = {};
-    let search = Data_Logic.get_search(Project_Table.PRODUCT,{},{},1,0);
+    let search = Data_Logic.get_search(Store_Table.PRODUCT,{},{},1,0);
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.DELETE_SEARCH);
     [biz_response,biz_data] = await Data_Service.delete_search(url,search,option);
@@ -143,7 +150,7 @@ test('data_copy', async () => {
     console.log('COPY-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let id = '69f356eb877ecbb2fbba06ef';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.COPY);
@@ -158,27 +165,38 @@ test('favorite_post', async () => {
     console.log('FAVORITE-POST-START');
     let response={};
     let data = {};
-    let parent_table = Project_Table.PRODUCT;
-    let parent_id = '69f20dcf3e553abe771c2130';
-    let user_id = '69f18a8d94953a568b894178';
+    let parent_table = Store_Table.PRODUCT;
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
-    [biz_response,biz_data] = await Favorite_Service.post(url,parent_table,parent_id,user_id,option);
+    let favorite = Favorite_Logic.get(PARENT.table,PARENT.id,USER.id);
+    [biz_response,biz_data] = await Favorite_Service.post(url,favorite,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('FAVORITE-POST-SUCCESS');
     console.log('FAVORITE-POST-DONE');
+}, 99999);
+//9_favorite_get - 9_test_favorite_get
+test('favorite_get', async () => {
+    console.log('FAVORITE-GET-START');
+    let response={};
+    let data = {};
+   let option = {};
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.GET);
+    let favorite = Favorite_Logic.get(PARENT.table,PARENT.id,USER.id);
+    [biz_response,biz_data] = await Favorite_Service.get(url,favorite,option);
+    Log.w('99_biz_response',biz_response);
+    Log.w('99_biz_data',biz_data);
+    console.log('FAVORITE-GET-SUCCESS');
+    console.log('FAVORITE-GET-DONE');
 }, 99999);
 //9_favorite_user_search - 9_test_user_search
 test('favorite_user_search', async () => {
     console.log('FAVORITE-USER-SEARCH-START');
     let response={};
     let data = {};
-    let parent_table = Project_Table.PRODUCT;
-    let user_id = '69f117bffd2c4642efcaa912';
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.USER_SEARCH);
-    [biz_response,biz_data] = await Favorite_Service.user_search(url,parent_table,user_id,option);
+    [biz_response,biz_data] = await Favorite_Service.user_search(url,PARENT.table,USER.id,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('FAVORITE-USER-SEARCH-SUCCESS');
@@ -189,12 +207,10 @@ test('favorite_delete', async () => {
     console.log('FAVORITE-DELETE-START');
     let response={};
     let data = {};
-    let parent_table = Project_Table.PRODUCT;
-    let parent_id = '69f117bffd2c4642efcaa8b9';
-    let user_id = '69f117bffd2c4642efcaa912';
+    let parent_table = Store_Table.PRODUCT;
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
-    [biz_response,biz_data] = await Favorite_Service.delete(url,parent_table,parent_id,user_id,option);
+    [biz_response,biz_data] = await Favorite_Service.delete(url,PARENT.table,PARENT.id,user_id,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('FAVORITE-POST-SUCCESS');
@@ -285,12 +301,13 @@ test('review_post', async () => {
     let response={};
     let data = {};
     let parent_table = Store_Table.PRODUCT;
-    let user = Data_Logic.get(User_Table.USER,'69f356eb877ecbb2fbba0745');
-    let parent = Data_Logic.get(Store_Table.PRODUCT,'69f356eb877ecbb2fbba06f2');
-    let review = Review_Logic.get_test();
+    let user = Data_Logic.get(User_Table.USER,'69f4274f907e3b7478a063a4');
+    let parent = Data_Logic.get(Store_Table.PRODUCT,'69f52ed63d56eafdef8dd7f');
+    let review_test = Review_Logic.get_test();
+    let review = Review_Logic.get(parent_table,parent.id,user.table,user.id,review_test.title,review_test.comment,review_test.rating)
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Review_Url.POST);
-    const [biz_response,biz_data] = await Review_Service.post(url,parent.table,parent.id,User_Table.USER,user.id,review);
+    const [biz_response,biz_data] = await Review_Service.post(url,review);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('REVIEW-POST-SUCCESS');
@@ -318,8 +335,8 @@ test('review_parent_search', async () => {
     let response={};
     let data = {};
     let parent_id = '69f356eb877ecbb2fbba06f2';
-    let parent_table = Project_Table.PRODUCT;
-    let user_table = Project_Table.USER;
+    let parent_table = Store_Table.PRODUCT;
+    let user_table = User_Table.USER;
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Review_Url.PARENT_SEARCH);
     const [biz_response,biz_data] = await Review_Service.delete(url,user_table,parent_table,parent_id,{},1,0);
@@ -333,7 +350,7 @@ test('blank', async () => {
     console.log('BLANK-START');
     let response={};
     let data = {};
-    let table = Project_Table.PRODUCT;
+    let table = Store_Table.PRODUCT;
     let parent = Data_Logic.get(table,0,{data:{title:Num.get_id()+"_title",sub_note:Num.get_id()+"_sub_note"}});
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Data_Url.POST);

@@ -1,33 +1,43 @@
 // -- biz9
-import {Log,Obj,Status_Type,Response_Field,Response_Logic} from "biz9-utility";
-import {Review_Url} from "biz9-review";
-import {Config} from "../../config";
-import {Remote_Logic,Remote_Data} from "biz9-react-remote";
+import {Log,Str,Obj,Status_Type,Response_Field,Response_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-utility/source";
+import {Data_Url,Data_Logic,Data_Response_Field} from "/home/think1/www/doqbox/biz9-framework/biz9-data-logic/source";
+import {Review_Url,Review_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-review/source";
+import {Remote_Field,Remote,Remote_Logic} from "/home/think1/www/doqbox/biz9-framework/biz9-react-remote/source";
+// --other
+import {Config} from "./constant";
 const async = require('async');
 class Review_Service {
     /* - 9_DEFINE -
      * -- METHODS --
-     * post / (database,parent_table,parent_id,user_table,user_id,post_review,option)
-     * parent_search / (database,user_table,parent_table,parent_id,sort_by,page_current,page_size)
-     * delete / (database,parent_table,parent_id,review_id)
-     * cacul;ate / (database,parent_table,parent_id)
+     * post / (url,review,option) / fix
+     * parent_search / (database,user_table,parent_table,parent_id,sort_by,page_current,page_size) / fix
+     * delete / (database,parent_table,parent_id,review_id) / fix
+     * cacul;ate / (database,parent_table,parent_id) / pending
+     * -- HELPERS --
+     * Review_Logic.get(parent_table,parent_id,user_table,user_id,title,comment,rating)
+     * -- URLS --
+     * DELETE
+     * GET
+     * POST
+     * PARENT_SEARCH
     */
     // - 9_post_review 9_review_post
-    static post = (url,parent_table,parent_id,user_table,user_id,post_review,option) => {
+    static post = (url,review,option) => {
         return new Promise((callback) => {
             let response = Response_Logic.get();
             let data = {};
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
+                    console.log('11111111111');
                     const form_data = {
-                        parent_table:parent_table,
-                        parent_id:parent_id,
-                        user_table:user_table,
-                        user_id:user_id,
-                        post_review:post_review,
+                        review:review,
                         option:option};
+                    Log.w('11_form_data',form_data);
+                    Log.w('22_url',url);
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
+                    Log.w('22_biz_response',biz_response);
+                    Log.w('22_biz_data',biz_data);
                     response = biz_response;
                     data = biz_data;
                     call();
@@ -40,10 +50,11 @@ class Review_Service {
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_PARENT_TABLE,Status_Type.OK,parent_table,{title:Config.TITLE}));
                     response.messages.push(Response_Logic.get_message(Review_Response_Field.PARAM_REVIEW,Status_Type.OK,post_review,{title:Config.TITLE}));
                     response.messages.push(Response_Logic.get_message(Data_Response_Field.PARAM_OPTION,Status_Type.OK,option,{title:Config.TITLE}));
+                    //call();
                 },
             ],
                 function(error, result){
-                    callback([response,data]);
+                    //callback([response,data]);
                 });
         });
     };
@@ -102,4 +113,4 @@ class Review_Service {
         });
     };
 }
-export {Review_Data};
+export {Review_Service};

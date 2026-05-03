@@ -18,21 +18,8 @@ const Data_Config = {
 class Title {
     static PRODUCT = 'Product';
 }
-class Project_Table {
-    static BLANK='blank_biz';
-    static CONTENT='content_biz';
-    static FAQ='faq_biz';
-    static BLOG_POST='blog_post_biz';
-    static PRODUCT='product_biz';
-    static TYPE='type_biz';
-    static CUSTOM_FIELD='custom_field_biz';
-    static CATEGORY='category_biz';
-    static IMAGE_GALLERY='image_gallery_biz';
-    static IMAGE='image_biz';
-}
 module.exports = {
     Config,
     Data_Config,
     Title,
-    Project_Table
 }
