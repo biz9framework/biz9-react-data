@@ -54,8 +54,8 @@ import series from 'async/series';
  *  review_parent_search //
  */
 // -- globalz --
-let PARENT = Data_Logic.get(Store_Table.PRODUCT,'69f52e5114ec8145e5057fa4');
-let USER = Data_Logic.get(User_Table.PRODUCT,'69f426cfe2edf06f73126a98');
+let PARENT = Data_Logic.get(Store_Table.PRODUCT,'69f52e5114ec8145e5057fa3');
+let USER = Data_Logic.get(User_Table.PRODUCT,'69f420b6dac3a81879848037');
 
 //9_delete - 9_test_delete
 test('data_delete', async () => {
@@ -165,7 +165,6 @@ test('favorite_post', async () => {
     console.log('FAVORITE-POST-START');
     let response={};
     let data = {};
-    let parent_table = Store_Table.PRODUCT;
     let option = {};
     const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
     let favorite = Favorite_Logic.get(PARENT.table,PARENT.id,USER.id);
@@ -209,8 +208,8 @@ test('favorite_delete', async () => {
     let data = {};
     let parent_table = Store_Table.PRODUCT;
     let option = {};
-    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.POST);
-    [biz_response,biz_data] = await Favorite_Service.delete(url,PARENT.table,PARENT.id,user_id,option);
+    const url = Remote_Logic.get_url(Config.APP_ID,Config.URL,Favorite_Url.DELETE);
+    [biz_response,biz_data] = await Favorite_Service.delete(url,PARENT.table,PARENT.id,USER.id,option);
     Log.w('99_biz_response',biz_response);
     Log.w('99_biz_data',biz_data);
     console.log('FAVORITE-POST-SUCCESS');
