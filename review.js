@@ -29,18 +29,13 @@ class Review_Service {
             option = !Obj.check_is_empty(option) ? option : {};
             async.series([
                 async function(call){
-                    console.log('11111111111');
-                    const form_data = {
-                        review:review,
-                        option:option};
-                    Log.w('11_form_data',form_data);
-                    Log.w('22_url',url);
+                    const form_data = {review:review,option:option};
                     const [biz_response,biz_data] = await Remote.post(url,form_data);
                     Log.w('22_biz_response',biz_response);
                     Log.w('22_biz_data',biz_data);
                     response = biz_response;
                     data = biz_data;
-                    call();
+                    //call();
                 },
                  async function(call) {
                     // -- respopnse-param --
